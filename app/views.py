@@ -41,8 +41,9 @@ def like_note(request, pk):
 # ....................... All notes ..................
 def all_notes(request):
     notes = Note.objects.filter(publish=True)
+    recent_notes = notes.order_by('-updated_date')[0:4]
 
-    context = {'notes': notes}
+    context = {'notes': notes, 'recent_notes': recent_notes}
     return render(request, 'index.html', context)
 # class NoteList(ListView):
 #     model = Note
@@ -75,7 +76,7 @@ def create_note(request):
             note = form.save(commit=False)
             note.creator = creator
             note.save()
-            return redirect('notes')
+            return redirect('profile', pk=request.user.id)
     context = {'form': form}
     return render(request, 'note-form.html', context)
 
